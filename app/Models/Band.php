@@ -13,7 +13,7 @@ class Band extends Model
     protected $fillable = [
         'name',
         'description',
-        'members_count'
+        'location'    
     ];
 
     public function concerts()

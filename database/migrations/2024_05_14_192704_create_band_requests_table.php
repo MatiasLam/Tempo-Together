@@ -10,7 +10,7 @@ class CreateBandRequestsTable extends Migration
     {
         Schema::create('band_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('band_id')->constrained()->onDelete('cascade');
+            $table->foreignId('band_id')->onDelete('cascade');
             $table->string('new_member_instrument', 120);
             $table->char('instrument_level', 14)->nullable();
             $table->text('description')->nullable();

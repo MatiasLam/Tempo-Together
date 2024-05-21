@@ -10,7 +10,7 @@ class CreateConcertsTable extends Migration
     {
         Schema::create('concerts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('band_id')->constrained()->onDelete('cascade');
+            $table->foreignId('band_id')->onDelete('cascade');
             $table->date('date')->nullable();
             $table->string('location', 40)->nullable();
             $table->text('note')->nullable();

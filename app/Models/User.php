@@ -13,12 +13,13 @@ class User extends Model
     protected $fillable = [
         'user_id',
         'username',
+        'email',
         'password_hash',
+        'telephone',
         'type',
         'icon',
         'age',
         'location',
-        'number'
     ];
 
     public function roles()

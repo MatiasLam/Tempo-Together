@@ -12,13 +12,11 @@ class BandMember extends Model
     public $incrementing = true;
     protected $fillable = [
         'band_id',
-        'user_id'
+        'name',
+        'instrument',
+        'age',
+        'instrument_level'
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function band()
     {

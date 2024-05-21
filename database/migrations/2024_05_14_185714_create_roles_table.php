@@ -10,7 +10,8 @@ class CreateRolesTable extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->char('user_id', 12);
+            //user_id es autoincrementado
+            $table->unsignedBigInteger('user_id');            
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
             $table->char('role', 16);
             $table->timestamps();

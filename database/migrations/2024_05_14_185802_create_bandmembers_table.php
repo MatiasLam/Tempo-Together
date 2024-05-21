@@ -10,8 +10,11 @@ class CreateBandMembersTable extends Migration
     {
         Schema::create('band_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('band_id')->constrained()->onDelete('cascade');
-            $table->char('user_id', 12)->index();
+            $table->foreignId('band_id');
+            $table->string('name', 20);
+            $table->string('instrument', 20);
+            $table->integer('age');
+            $table->string('instrument_level', 20);
             $table->timestamps();
         });
     }
