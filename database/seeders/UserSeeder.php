@@ -4,37 +4,40 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
     public function run()
     {
-        /* este es el modelo     public function definition()
-    {
-        return [
-            'user_id' => $this->faker->unique()->regexify('[A-Za-z0-9]{12}'),
-            'username' => $this->faker->unique()->regexify('[A-Za-z0-9]{12}'),
-            'password_hash' => bcrypt('password'), // You may adjust this as needed
-            'type' => $this->faker->randomElement(['admin', 'user']), // Or whatever types you have
-            'icon' => $this->faker->imageUrl(), // Or adjust to your icon generation logic
-            'age' => $this->faker->numberBetween(18, 99),
-            'location' => $this->faker->city,
-            'number' => $this->faker->numerify('#########'),
-        ];
-    }
-} */
-        //crea un usuario con el id uno : 
-        User::factory()->create([
-            'user_id' => 1,
-            'username' => 'admin',
-            'password_hash' => bcrypt('password'),
+        DB::table('users')->insert([
+            'username' => 'admin1234',
+            'name' => 'admin',
+            'lastname' => 'admin',
+            'email' => 'admin@gmail.com',
+            //haz que password_hash sea la contraseña encriptada de 'admin'
+            'password_hash' => bcrypt('admin1234'),
+            'telephone' => '123456789',
             'type' => 'admin',
-            'icon' => 'https://randomuser.me/api/port'
+            'icon' => 'https://placehold.co/600x400',
+            'age' => '20',
+            'latitude' => '20.0000000',
+            'longitude' => '20.0000000',
+        ],
+        [
+            'username' => 'user1234',
+            'name' => 'user',
+            'lastname' => 'user',
+            'email' => 'user@gmail.com',
+            //haz que password_hash sea la contraseña encriptada de 'user'
+            'password_hash' => bcrypt('12341234'),
+            'telephone' => '123456789',
+            'type' => 'user',
+            'icon' => 'https://placehold.co/600x400',
+            'age' => '20',
+            'latitude' => '20.0000000',
+            'longitude' => '20.0000000'
         ]);
-
-        User::factory()
-            ->count(50)
-            ->create();
     }
 }
 

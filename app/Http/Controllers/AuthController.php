@@ -39,45 +39,55 @@ class AuthController extends Controller{
 
     }
 
-    public function register(Request $request){
-        
+    public function register(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:12',
+            'name' => 'required|string|max:20',
+            'lastname' => 'required|string|max:20',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'age' => 'required|integer|max:99',
             'type' => 'required|string|in:musician,band',
             'telephone' => 'string|min:9|max:9|unique:users',
+            'latitude' => 'numeric|between:-90,90',
+            'longitude' => 'numeric|between:-180,180',
         ]);
-    
-       // Si falla la validación
+
+        // Si falla la validación
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], 422);
         }
-      
-        try{
+
+        try {
             $user = new User();
             $user->username = $request->input('username');
+            $user->name = $request->input('name');
+            $user->lastname = $request->input('lastname');
             $user->email = $request->input('email');
             $user->password_hash = Hash::make($request->input('password'));
             $user->age = $request->input('age');
             $user->type = $request->input('type');
 
-            if(isset($request->telephone)){
+            if ($request->has('telephone')) {
                 $user->telephone = $request->input('telephone');
             }
 
-            if(isset($request->location)){
-                $user->location = $request->input('location');
+            // Guardar las coordenadas
+            if ($request->has('latitude') && $request->has('longitude')) {
+                $latitude = $request->input('latitude');
+                $longitude = $request->input('longitude');
+                $user->latitude = $latitude;
+                $user->longitude = $longitude;
             }
 
             $user->save();
 
             return response()->json([
-                'message' => 'User created'
+                'user' => $user
             ], 201);
 
         } catch (\Exception $e) {
@@ -86,15 +96,16 @@ class AuthController extends Controller{
                 'error' => $e->getMessage()
             ], 500);
         }
-        
     }
 
     public function registerBand(Request $request) {
         // Validación de los datos recibidos
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:12|min:3',
+            'user_id' => 'required|integer|exists:users,user_id|unique:bands,user_id',
             'description' => 'required|string|max:120',
-            'location' => 'nullable|string|max:120',
+            'latitude' => 'numeric|between:-90,90',
+            'longitude' => 'numeric|between:-180,180',
         ]);
     
         // Si falla la validación
@@ -111,16 +122,28 @@ class AuthController extends Controller{
             $band->name = $request->input('name');
             $band->description = $request->input('description');
             
-            if ($request->has('location')) {
-                $band->location = $request->input('location');
+            if ($request->has('latitude') && $request->has('longitude')) {
+                $latitude = $request->input('latitude');
+                $longitude = $request->input('longitude');
+                $band->latitude = $latitude;
+                $band->longitude = $longitude;
             }
-    
+            
+            $band->user_id = $request->input('user_id');  // Asocia la banda al usuario
+            
             $band->save(); // Guardar la instancia en la base de datos
-    
-            // Respuesta exitosa
+            
+            // Actualizar el campo 'type' del usuario a 'band'
+            $user = User::find($request->input('user_id'));
+            $user->type = 'band';
+            $user->save();
+            
+            // Si la respuesta es exitosa se devuelve el id de la banda
             return response()->json([
-                'message' => 'Band created'
+                'message' => 'Band created',
+                'band' => $band
             ], 201);
+            
         } catch (\Exception $e) {
             // Manejo de excepciones
             return response()->json([

@@ -9,17 +9,19 @@ class User extends Model
 {
     use HasFactory;
     protected $primaryKey = 'user_id';
-    public $incrementing = false;
+    public $incrementing = true;
     protected $fillable = [
-        'user_id',
         'username',
+        'name',
+        'lastname',
         'email',
         'password_hash',
         'telephone',
         'type',
         'icon',
         'age',
-        'location',
+        'latitude',
+        'longitude'
     ];
 
     public function roles()
@@ -32,6 +34,7 @@ class User extends Model
         return $this->hasMany(UserInstrument::class);
     }
 
+    
     public function bandMembers()
     {
         return $this->hasMany(BandMember::class);

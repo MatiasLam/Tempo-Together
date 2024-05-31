@@ -11,14 +11,11 @@ class DatabaseSeeder extends Seeder
         // Llamar a los seeders creados anteriormente
         $this->call([
             UserSeeder::class,
-
-            RoleSeeder::class,
-
             BandSeeder::class,
-            ConcertSeeder::class,
-            BandMemberSeeder::class,
             BandRequestSeeder::class,
-            UserInstrumentSeeder::class,
+            InstrumentSeeder::class,
+            ConcertSeeder::class,
+            UserInstrumentSeeder::class
         ]);
 
     }

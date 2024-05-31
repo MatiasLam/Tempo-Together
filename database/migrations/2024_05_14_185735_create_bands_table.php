@@ -10,9 +10,11 @@ class CreateBandsTable extends Migration
     {
         Schema::create('bands', function (Blueprint $table) {
             $table->id('band_id')->autoIncrement();
+            $table->foreignId('user_id');
             $table->string('name', 20);
             $table->text('description');
-            $table->text('location')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }

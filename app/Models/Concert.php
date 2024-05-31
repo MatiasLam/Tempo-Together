@@ -12,9 +12,13 @@ class Concert extends Model
     public $incrementing = true;
     protected $fillable = [
         'band_id',
+        'title',
         'date',
-        'location',
-        'note',
+        'time',
+        'latitude',
+        'longitude',
+        'place',
+        'desc',
         'poster'
     ];
 

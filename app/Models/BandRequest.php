@@ -12,6 +12,7 @@ class BandRequest extends Model
     public $incrementing = true;
     protected $fillable = [
         'band_id',
+        'title',
         'new_member_instrument',
         'instrument_level',
         'description'

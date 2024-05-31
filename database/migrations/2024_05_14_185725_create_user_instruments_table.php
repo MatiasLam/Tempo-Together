@@ -9,11 +9,9 @@ class CreateUserInstrumentsTable extends Migration
     public function up()
     {
         Schema::create('user_instruments', function (Blueprint $table) {
-            $table->id();
-            $table->char('user_id', 12)->index();
-            $table->string('instrument', 20);
-            $table->char('instrument_level', 14)->nullable();
-            $table->timestamps();
+            $table->id('id')->autoIncrement();
+            $table->foreignId('user_id');
+            $table->foreignId('instrument_id');
         });
     }
 
@@ -21,4 +19,6 @@ class CreateUserInstrumentsTable extends Migration
     {
         Schema::dropIfExists('user_instruments');
     }
+
+    
 }

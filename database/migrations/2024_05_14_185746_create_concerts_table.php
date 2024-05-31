@@ -9,12 +9,16 @@ class CreateConcertsTable extends Migration
     public function up()
     {
         Schema::create('concerts', function (Blueprint $table) {
-            $table->id();
+            $table->id("concert_id")->autoIncrement();
             $table->foreignId('band_id')->onDelete('cascade');
-            $table->date('date')->nullable();
-            $table->string('location', 40)->nullable();
-            $table->text('note')->nullable();
-            $table->text('poster')->nullable();
+            $table->string('title',50);
+            $table->date('date');
+            $table->time('time');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->string('place');
+            $table->text('desc');
+            $table->string('poster')->nullable();
             $table->timestamps();
         });
     }

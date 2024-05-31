@@ -12,8 +12,10 @@ class Band extends Model
     public $incrementing = true;
     protected $fillable = [
         'name',
+        'user_id',
         'description',
-        'location'    
+        'latitude',
+        'longitude'    
     ];
 
     public function concerts()
