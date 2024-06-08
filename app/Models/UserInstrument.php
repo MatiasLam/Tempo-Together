@@ -12,6 +12,7 @@ class UserInstrument extends Model
     protected $fillable = [
         'user_id',
         'instrument_id',
+        'instrument_level'
     ];
 
     public function user()

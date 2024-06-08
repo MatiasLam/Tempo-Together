@@ -23,9 +23,8 @@ class ConcertController extends Controller
             'latitude' => 'numeric',
             'longitude' => 'numeric',
             'place' => 'required|string|max:100',
-            'desc' => 'string|max:1000',
-            'poster' => 'nullable|string|max:255'
-
+            'desc' => 'nullable|string|max:1000',
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048' // Asegúrate de que el campo es un archivo de imagen
         ]);
 
         // Si falla la validación
@@ -37,8 +36,30 @@ class ConcertController extends Controller
         }
 
         try {
+            // Subir y guardar el póster si se proporciona
+            if ($request->hasFile('poster')) {
+                $file = $request->file('poster');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('posters', $fileName, 'public');
+                $posterUrl = '/storage/' . $filePath;
+            } else {
+                $posterUrl = null;
+            }
+
             // Crear una nueva instancia de Concert usando los datos validados
-            $concert = Concert::create($request->all());
+            $concert = new Concert([
+                'band_id' => $request->input('band_id'),
+                'title' => $request->input('title'),
+                'date' => $request->input('date'),
+                'time' => $request->input('time'),
+                'latitude' => $request->input('latitude'),
+                'longitude' => $request->input('longitude'),
+                'place' => $request->input('place'),
+                'desc' => $request->input('desc'),
+                'poster' => $posterUrl
+                
+            ]);
+            $concert->save();
 
             return response()->json([
                 'message' => 'Concert added successfully',
@@ -81,6 +102,10 @@ class ConcertController extends Controller
                 ->having('distance', '<=', $distance)
                 ->get();
 
+            // Se cle añade el app_url a la imagen del póster
+            foreach ($concerts as $concert) {
+                $concert->poster = env('APP_URL'). $concert->poster;
+            }
             return response()->json([
                 'message' => 'Concerts found',
                 'concerts' => $concerts
@@ -109,6 +134,7 @@ class ConcertController extends Controller
             ], 422);
         }
     
+
         try {
             // Obtener la latitud y longitud del usuario
             $user = User::where('user_id', $request->input('user_id'))->first();
@@ -123,6 +149,10 @@ class ConcertController extends Controller
             ->orderBy('distance')
             ->get();
     
+        // Se cle añade el app_url a la imagen del póster
+        foreach ($concerts as $concert) {
+            $concert->poster = env('APP_URL'). $concert->poster;
+        }
             return response()->json([
                 'message' => 'Concerts found',
                 'concerts' => $concerts

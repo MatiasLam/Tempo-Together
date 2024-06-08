@@ -12,6 +12,7 @@ class CreateUserInstrumentsTable extends Migration
             $table->id('id')->autoIncrement();
             $table->foreignId('user_id');
             $table->foreignId('instrument_id');
+            $table->integer('instrument_level');
         });
     }
 

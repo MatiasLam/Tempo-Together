@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BandMember extends Model
 {
     use HasFactory;
-    protected $primaryKey = 'member_id';
+    protected $primaryKey = 'id';
     public $incrementing = true;
     protected $fillable = [
         'band_id',

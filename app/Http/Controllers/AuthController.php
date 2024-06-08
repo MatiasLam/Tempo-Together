@@ -9,6 +9,7 @@ use App\Models\Band;
 use App\Models\BandMember;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller{
     public function login(Request $request){
@@ -40,63 +41,68 @@ class AuthController extends Controller{
     }
 
     public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:12',
-            'name' => 'required|string|max:20',
-            'lastname' => 'required|string|max:20',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'age' => 'required|integer|max:99',
-            'type' => 'required|string|in:musician,band',
-            'telephone' => 'string|min:9|max:9|unique:users',
-            'latitude' => 'numeric|between:-90,90',
-            'longitude' => 'numeric|between:-180,180',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'username' => 'required|string|max:12',
+        'name' => 'required|string|max:20',
+        'lastname' => 'required|string|max:20',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8',
+        'age' => 'required|integer|max:99',
+        'type' => 'required|string|in:musician,band',
+        'telephone' => 'string|min:9|max:9|unique:users',
+        'latitude' => 'numeric|between:-90,90',
+        'longitude' => 'numeric|between:-180,180',
+        'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048' 
+    ]);
 
-        // Si falla la validación
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        try {
-            $user = new User();
-            $user->username = $request->input('username');
-            $user->name = $request->input('name');
-            $user->lastname = $request->input('lastname');
-            $user->email = $request->input('email');
-            $user->password_hash = Hash::make($request->input('password'));
-            $user->age = $request->input('age');
-            $user->type = $request->input('type');
-
-            if ($request->has('telephone')) {
-                $user->telephone = $request->input('telephone');
-            }
-
-            // Guardar las coordenadas
-            if ($request->has('latitude') && $request->has('longitude')) {
-                $latitude = $request->input('latitude');
-                $longitude = $request->input('longitude');
-                $user->latitude = $latitude;
-                $user->longitude = $longitude;
-            }
-
-            $user->save();
-
-            return response()->json([
-                'user' => $user
-            ], 201);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'User not created',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+        ], 422);
     }
+
+    try {
+        $user = new User();
+        $user->username = $request->input('username');
+        $user->name = $request->input('name');
+        $user->lastname = $request->input('lastname');
+        $user->email = $request->input('email');
+        $user->password_hash = Hash::make($request->input('password'));
+        $user->age = $request->input('age');
+        $user->type = $request->input('type');
+
+        if ($request->has('telephone')) {
+            $user->telephone = $request->input('telephone');
+        }
+
+        if ($request->has('latitude') && $request->has('longitude')) {
+            $user->latitude = $request->input('latitude');
+            $user->longitude = $request->input('longitude');
+        }
+
+        // Manejar la carga de la imagen
+        if ($request->hasFile('icon')) {
+            $file = $request->file('icon');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('profile_pictures', $fileName, 'public');
+            $user->icon = '/storage/' . $filePath;
+        }
+
+        $user->save();
+
+        return response()->json([
+            'user' => $user
+        ], 201);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'User not created',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
     public function registerBand(Request $request) {
         // Validación de los datos recibidos
@@ -158,10 +164,9 @@ class AuthController extends Controller{
         $validator = Validator::make($request->all(), [
             'band_id' => 'required|integer|exists:bands,band_id',
             'members' => 'required|array',
+            'members.*.id' => 'nullable|integer|exists:band_members,id',
             'members.*.name' => 'required|string',
             'members.*.instrument' => 'required|string',
-            'members.*.age' => 'required|integer',
-            'members.*.instrument_level' => 'required|string'
         ]);
     
         if ($validator->fails()) {
@@ -180,27 +185,42 @@ class AuthController extends Controller{
             }
     
             $members = $request->input('members');
-            foreach ($members as $member) {
-                $bandMember = new BandMember();
-                $bandMember->band_id = $request->input('band_id');
-                $bandMember->name = $member['name'];
-                $bandMember->instrument = $member['instrument'];
-                $bandMember->age = $member['age'];
-                $bandMember->instrument_level = $member['instrument_level'];
-                $bandMember->save();
+            foreach ($members as $memberData) {
+                if (isset($memberData['id'])) {
+                    // Update existing member
+                    $bandMember = BandMember::where('id', $memberData['id'])
+                                            ->where('band_id', $request->input('band_id'))
+                                            ->first();
+    
+                    if ($bandMember) {
+                        $bandMember->update([
+                            'name' => $memberData['name'],
+                            'instrument' => $memberData['instrument']
+                        ]);
+                    }
+                } else {
+                    // Create new member
+                    $bandMember = new BandMember();
+                    $bandMember->band_id = $request->input('band_id');
+                    $bandMember->name = $memberData['name'];
+                    $bandMember->instrument = $memberData['instrument'];
+                    $bandMember->save();
+                }
             }
     
             return response()->json([
-                'message' => 'Band members added'
+                'message' => 'Band members added or updated'
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Band members not added',
+                'message' => 'Band members not added or updated',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
     
-    public function userProfile(Request $request){}
+    
+    
+    
 
 }

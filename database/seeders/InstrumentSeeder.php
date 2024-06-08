@@ -14,7 +14,10 @@ class InstrumentSeeder extends Seeder
     public function run(): void
     {
         $instruments = [
+            ['instrument' => 'Vocalista', 'icon' => 'vocalista.png'],
             ['instrument' => 'Guitarra', 'icon' => 'guitarra.png'],
+            ['instrument' => 'Bajo', 'icon' => 'bajo.png'],
+            ['instrument' => 'Bateria', 'icon' => 'bateria.png'],
             ['instrument' => 'Piano', 'icon' => 'piano.png'],
             ['instrument' => 'Violín', 'icon' => 'violin.png'],
             ['instrument' => 'Batería', 'icon' => 'bateria.png'],
