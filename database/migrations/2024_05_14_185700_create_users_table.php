@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('password_hash');
             $table->string('telephone', 9)->nullable();
             $table->char('type', 8);
-            $table->string('icon', 120)->default('https://placehold.co/600x400');
+            $table->string('icon', 120)->default('/storage/profile_pictures/defaultUserIcon.png');
             $table->char('age', 2);
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();

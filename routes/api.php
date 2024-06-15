@@ -37,6 +37,8 @@ Route::get('search', [SearchController::class, 'searchUserBands']);
 Route::get('get-user', [SearchController::class, 'getUserDetails']);
 Route::get('get-band', [SearchController::class, 'getBandDetails']);
 Route::get('get-band-members', [SearchController::class, 'getBandMembers']);
+
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');

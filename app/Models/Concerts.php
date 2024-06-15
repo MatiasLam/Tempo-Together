@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Concert extends Model
+class Concerts extends Model
 {
     use HasFactory;
-    protected $primaryKey = 'concerts_id';
+    protected $primaryKey = 'concert_id';
     public $incrementing = true;
     protected $fillable = [
         'band_id',

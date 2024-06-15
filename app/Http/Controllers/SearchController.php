@@ -10,7 +10,9 @@ use App\Models\Band;
 
 use App\Models\User;
 
-use App\Models\Concert;
+use App\Models\Concerts;
+
+use App\Models\BandRequest;
 
 class SearchController extends Controller
 {
@@ -103,9 +105,16 @@ class SearchController extends Controller
 
         $band_id = $request->input('band_id');
 
-        // Buscar banda por id
-        $band = Band::where('band_id', $band_id)->first();
+        // Buscar banda por id e incluye los datos del owner
+        $band = Band::where('bands.band_id', $band_id)
+        ->join('users', 'bands.user_id', '=', 'users.user_id')->first();
+        
+        //conciertos
+        $concerts = Concerts::where('band_id', $band_id)->first();
 
+        //requests
+        $requests = BandRequest::where('band_id', $band_id)->first();
+        
         // Se elimina el band id y los campos de fecha
         unset($band->band_id);
         unset($band->created_at);
@@ -113,7 +122,9 @@ class SearchController extends Controller
 
         if ($band) {
             return response()->json([
-                'band' => $band
+                'band' => $band,
+                'concerts' => $concerts,
+                'requests' => $requests
             ], 200);
         } else {
             return response()->json([

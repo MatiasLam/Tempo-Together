@@ -19,7 +19,6 @@ class UserSeeder extends Seeder
             'password_hash' => bcrypt('admin1234'),
             'telephone' => '123456789',
             'type' => 'admin',
-            'icon' => 'https://placehold.co/600x400',
             'age' => '20',
             'latitude' => '20.0000000',
             'longitude' => '20.0000000',

@@ -88,6 +88,8 @@ class AuthController extends Controller{
             $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('profile_pictures', $fileName, 'public');
             $user->icon = '/storage/' . $filePath;
+        }else{
+            $user->icon = '/storage/profile_pictures/defaultUserIcon.png';
         }
 
         $user->save();

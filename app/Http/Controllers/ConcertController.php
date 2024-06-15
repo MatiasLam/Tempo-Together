@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\User;
 
-use App\Models\Concert;
+use App\Models\Concerts;
 
 class ConcertController extends Controller
 {
@@ -23,7 +23,7 @@ class ConcertController extends Controller
             'latitude' => 'numeric',
             'longitude' => 'numeric',
             'place' => 'required|string|max:100',
-            'desc' => 'nullable|string|max:1000',
+            'desc' => 'required|string|max:1000',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048' // Asegúrate de que el campo es un archivo de imagen
         ]);
 
@@ -43,11 +43,11 @@ class ConcertController extends Controller
                 $filePath = $file->storeAs('posters', $fileName, 'public');
                 $posterUrl = '/storage/' . $filePath;
             } else {
-                $posterUrl = null;
+                $posterUrl = "/storage/posters/defaultConcert.jpg";
             }
 
             // Crear una nueva instancia de Concert usando los datos validados
-            $concert = new Concert([
+            $concert = new Concerts([
                 'band_id' => $request->input('band_id'),
                 'title' => $request->input('title'),
                 'date' => $request->input('date'),
@@ -98,7 +98,7 @@ class ConcertController extends Controller
             $distance = $request->input('distance');
 
             // Obtener los conciertos que están a una distancia menor o igual a la especificada
-            $concerts = Concert::select(DB::raw('*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$userLatitude, $userLongitude, $userLatitude]))
+            $concerts = Concerts::select(DB::raw('*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance', [$userLatitude, $userLongitude, $userLatitude]))
                 ->having('distance', '<=', $distance)
                 ->get();
 
@@ -142,17 +142,13 @@ class ConcertController extends Controller
             $userLongitude = $user->longitude;
     
             // Obtener los conciertos ordenados por distancia
-            $concerts = Concert::selectRaw(
+            $concerts = Concerts::selectRaw(
                 '*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance',
                 [$userLatitude, $userLongitude, $userLatitude]
             )
             ->orderBy('distance')
             ->get();
     
-        // Se cle añade el app_url a la imagen del póster
-        foreach ($concerts as $concert) {
-            $concert->poster = env('APP_URL'). $concert->poster;
-        }
             return response()->json([
                 'message' => 'Concerts found',
                 'concerts' => $concerts
