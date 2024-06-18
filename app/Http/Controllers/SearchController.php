@@ -116,24 +116,40 @@ class SearchController extends Controller
 
         // Buscar banda por id e incluye los datos del owner
         $band = Band::where('bands.band_id', $band_id)
-        ->join('users', 'bands.user_id', '=', 'users.user_id')->first();
-        
+        ->join('users', 'bands.user_id', '=', 'users.user_id')
+        ->select('bands.*', 'users.name as user_name','users.email','users.telephone')
+        ->first();
+
+    
         //conciertos
-        $concerts = Concerts::where('band_id', $band_id)->first();
+        $concerts = DB::table('concerts')
+            ->where('band_id', $band_id)
+            ->get();
 
         //requests
-        $requests = BandRequest::where('band_id', $band_id)->first();
+        $requests = DB::table('band_requests')
+            ->where('band_id', $band_id)
+            ->get();
+
+        //members
+        $members = DB::table('band_members')
+            ->where('band_id', $band_id)
+            ->select('name', 'instrument')
+            ->get();
         
         // Se elimina el band id y los campos de fecha
         unset($band->band_id);
         unset($band->created_at);
         unset($band->updated_at);
 
+        //se añaden lo miembros de la banda, conciertos y solicitudes
+        $band->members = $members;
+        $band->concerts = $concerts;
+        $band->requests = $requests;
+
         if ($band) {
             return response()->json([
-                'band' => $band,
-                'concerts' => $concerts,
-                'requests' => $requests
+                'band' => $band
             ], 200);
         } else {
             return response()->json([

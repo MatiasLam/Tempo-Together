@@ -140,15 +140,19 @@ class ConcertController extends Controller
             $user = User::where('user_id', $request->input('user_id'))->first();
             $userLatitude = $user->latitude;
             $userLongitude = $user->longitude;
-    
+            
             // Obtener los conciertos ordenados por distancia
             $concerts = Concerts::selectRaw(
-                '*, ( 6371 * acos( cos( radians(?) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( latitude ) ) ) ) AS distance',
+                'concerts.*, bands.name , ( 6371 * acos( cos( radians(?) ) * cos( radians( concerts.latitude ) ) * cos( radians( concerts.longitude ) - radians(?) ) + sin( radians(?) ) * sin( radians( concerts.latitude ) ) ) ) AS distance',
                 [$userLatitude, $userLongitude, $userLatitude]
             )
+            ->join('bands', 'concerts.band_id', '=', 'bands.band_id')
+
             ->orderBy('distance')
             ->get();
-    
+
+
+
             return response()->json([
                 'message' => 'Concerts found',
                 'concerts' => $concerts
