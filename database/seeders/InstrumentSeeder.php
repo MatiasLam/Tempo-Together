@@ -20,7 +20,6 @@ class InstrumentSeeder extends Seeder
             ['instrument' => 'Bateria', 'icon' => 'bateria.png'],
             ['instrument' => 'Piano', 'icon' => 'piano.png'],
             ['instrument' => 'Violín', 'icon' => 'violin.png'],
-            ['instrument' => 'Batería', 'icon' => 'bateria.png'],
             ['instrument' => 'Flauta', 'icon' => 'flauta.png'],
             ['instrument' => 'Saxofón', 'icon' => 'saxofon.png'],
             ['instrument' => 'Trompeta', 'icon' => 'trompeta.png'],

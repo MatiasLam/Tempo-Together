@@ -10,7 +10,7 @@ class CreateConcertsTable extends Migration
     {
         Schema::create('concerts', function (Blueprint $table) {
             $table->id("concert_id")->autoIncrement();
-            $table->foreignId('band_id')->onDelete('cascade');
+            $table->unsignedBigInteger('band_id');
             $table->string('title',50);
             $table->date('date');
             $table->time('time');
@@ -20,6 +20,8 @@ class CreateConcertsTable extends Migration
             $table->text('desc');
             $table->string('poster')->nullable();
             $table->timestamps();
+
+            $table->foreign('band_id')->references('band_id')->on('bands')->onDelete('cascade');
         });
     }
 

@@ -21,7 +21,6 @@ class BandMemberSeeder extends Seeder
             ['band_id' => 7, 'name' => 'Angus Young', 'instrument' => 'Guitar'],
             ['band_id' => 8, 'name' => 'Roger Daltrey', 'instrument' => 'Vocals'],
             ['band_id' => 9, 'name' => 'Joey Ramone', 'instrument' => 'Vocals'],
-            ['band_id' => 10, 'name' => 'Joe Strummer', 'instrument' => 'Vocals'],
             ['band_id' => 1, 'name' => 'Roger Waters', 'instrument' => 'Bass'],
             ['band_id' => 2, 'name' => 'Brian May', 'instrument' => 'Guitar'],
             ['band_id' => 3, 'name' => 'Paul McCartney', 'instrument' => 'Bass'],
@@ -31,7 +30,6 @@ class BandMemberSeeder extends Seeder
             ['band_id' => 7, 'name' => 'Malcolm Young', 'instrument' => 'Guitar'],
             ['band_id' => 8, 'name' => 'Pete Townshend', 'instrument' => 'Guitar'],
             ['band_id' => 9, 'name' => 'Johnny Ramone', 'instrument' => 'Guitar'],
-            ['band_id' => 10, 'name' => 'Mick Jones', 'instrument' => 'Guitar'],
             ['band_id' => 1, 'name' => 'Nick Mason', 'instrument' => 'Drums'],
             ['band_id' => 2, 'name' => 'Roger Taylor', 'instrument' => 'Drums'],
             ['band_id' => 3, 'name' => 'Ringo Starr', 'instrument' => 'Drums'],
@@ -41,7 +39,6 @@ class BandMemberSeeder extends Seeder
             ['band_id' => 7, 'name' => 'Phil Rudd', 'instrument' => 'Drums'],
             ['band_id' => 8, 'name' => 'Keith Moon', 'instrument' => 'Drums'],
             ['band_id' => 9, 'name' => 'Tommy Ramone', 'instrument' => 'Drums'],
-            ['band_id' => 10, 'name' => 'Topper Headon', 'instrument' => 'Drums']
         ];
 
         DB::table('band_members')->insert($bandMembers);

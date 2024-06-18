@@ -10,7 +10,7 @@ class CreateBandRequestsTable extends Migration
     {
         Schema::create('band_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('band_id')->onDelete('cascade');
+            $table->unsignedBigInteger('band_id');
             $table->string('title', 50);
             $table->string('new_member_instrument', 120);
             $table->char('instrument_level', 14)->nullable();

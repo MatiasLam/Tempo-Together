@@ -12,13 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('instruments', function (Blueprint $table) {
-            $table->id('instrument_id')->autoIncrement();
+            $table->id('instrument_id');
             $table->string('instrument');
             $table->string('icon');
         });
     }
 
-    //belongstomany
 
     /**
      * Reverse the migrations.

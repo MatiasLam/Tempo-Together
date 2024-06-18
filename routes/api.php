@@ -14,6 +14,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('register-band', [AuthController::class, 'registerBand']); 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('add-members-band', [AuthController::class, 'addMembersBand']);
+Route::post('edit-user', [AuthController::class, 'editUser']);
 
 
 /* Requests */

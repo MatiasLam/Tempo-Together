@@ -43,11 +43,11 @@ class AuthController extends Controller{
     public function register(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'username' => 'required|string|max:12',
+        'username' => 'required|string|max:12|unique:users',
         'name' => 'required|string|max:20',
         'lastname' => 'required|string|max:20',
         'email' => 'required|string|email|max:255|unique:users',
-        'password' => 'required|string|min:8',
+        'password' => 'required|string|min:8|max:20',
         'age' => 'required|integer|max:99',
         'type' => 'required|string|in:musician,band',
         'telephone' => 'string|min:9|max:9|unique:users',
@@ -105,6 +105,92 @@ class AuthController extends Controller{
         ], 500);
     }
 }
+
+
+    public function editUser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer|exists:users,user_id',
+            'username' => 'string|max:12|unique:users',
+            'name' => 'string|max:20',
+            'lastname' => 'string|max:20',
+            'email' => 'string|email|max:255|unique:users',
+            'age' => 'integer|max:99',
+            'type' => 'string|in:musician,band',
+            'telephone' => 'string|min:9|max:9',
+            'latitude' => 'numeric|between:-90,90',
+            'longitude' => 'numeric|between:-180,180',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048' 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $user = User::find($request->input('user_id'));
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+
+            if ($request->has('username')) {
+                $user->username = $request->input('username');
+            }
+
+            if ($request->has('name')) {
+                $user->name = $request->input('name');
+            }
+
+            if ($request->has('lastname')) {
+                $user->lastname = $request->input('lastname');
+            }
+
+            if ($request->has('email')) {
+                $user->email = $request->input('email');
+            }
+
+            if ($request->has('age')) {
+                $user->age = $request->input('age');
+            }
+
+            if ($request->has('type')) {
+                $user->type = $request->input('type');
+            }
+
+            if ($request->has('telephone')) {
+                $user->telephone = $request->input('telephone');
+            }
+
+            if ($request->has('latitude') && $request->has('longitude')) {
+                $user->latitude = $request->input('latitude');
+                $user->longitude = $request->input('longitude');
+            }
+
+            if ($request->hasFile('icon')) {
+                $file = $request->file('icon');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('profile_pictures', $fileName, 'public');
+                $user->icon = '/storage/' . $filePath;
+            }
+
+            $user->save();
+
+            return response()->json([
+                'message' => 'User updated',
+                'user' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'User not updated',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function registerBand(Request $request) {
         // Validación de los datos recibidos

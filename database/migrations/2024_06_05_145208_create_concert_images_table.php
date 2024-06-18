@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('concert_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('concert_id')->onDelete('cascade');
+            $table->unsignedBigInteger('concert_id');
             $table->string('image_path');
+
+            $table->foreign('concert_id')->references('concert_id')->on('concerts')->onDelete('cascade');
 
         });
     }

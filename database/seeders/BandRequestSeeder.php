@@ -26,7 +26,6 @@ class BandRequestSeeder extends Seeder
             ['id' => '7', 'band_id' => '7','title' => 'Se busca flautista','description'=>'se busca nuevo integrante dispuesta a reunirse todos los sabados','new_member_instrument' => 'flauta'],
             ['id' => '8', 'band_id' => '8','title' => 'Se busca saxofonista','description'=>'se busca nuevo integrante dispuesta a reunirse todos los sabados','new_member_instrument' => 'saxofon'],
             ['id' => '9', 'band_id' => '9','title' => 'Se busca trompetista','description'=>'se busca nuevo integrante dispuesta a reunirse todos los sabados','new_member_instrument' => 'trompeta'],
-            ['id' => '10', 'band_id' => '10','title' => 'Se busca violonchelista','description'=>'se busca nuevo integrante dispuesta a reunirse todos los sabados','new_member_instrument' => 'violonchelo']
         ];
         DB::table('band_requests')->insert($requests);
     }

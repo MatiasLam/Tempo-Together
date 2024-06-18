@@ -66,6 +66,8 @@ class RequestController extends Controller
             $user = User::where('user_id', $request->input('user_id'))->first();
             $userLatitude = $user->latitude;
             $userLongitude = $user->longitude;
+            $userEmail = $user->email;
+            $userTelephone = $user->telephone;
             $distance = $request->input('distance');
     
             // Obtener las solicitudes que estén a una distancia menor o igual a la indicada
@@ -78,11 +80,15 @@ class RequestController extends Controller
                 [$userLatitude, $userLongitude, $userLatitude, $distance]
             );
     
+            $requests = array_map(function ($request) use ($userEmail, $userTelephone) {
+                $request->user_email = $userEmail;
+                $request->user_telephone = $userTelephone;
+                return $request;
+            }, $requests);
             return response()->json([
                 'message' => 'Requests found',
                 'requests' => $requests
             ], 200);
-    
         } catch (\Exception $e) {
             // Devolver error en caso de excepción
             return response()->json([
@@ -126,14 +132,16 @@ class RequestController extends Controller
             // Obtener las solicitudes ordenadas por distancia con todos los datos de la banda
             $requests = DB::select(
                 "SELECT br.id, br.band_id, br.title, br.new_member_instrument, br.instrument_level, br.description as request_description, br.created_at, br.updated_at,
-                        b.name, b.latitude, b.longitude,
+                        b.name, b.latitude, b.longitude, u.email,u.telephone,
                         (6371 * acos(cos(radians(?)) * cos(radians(b.latitude)) * cos(radians(b.longitude) - radians(?)) + sin(radians(?)) * sin(radians(b.latitude)))) AS distance
                  FROM band_requests br
                  JOIN bands b ON br.band_id = b.band_id
+                 JOIN users u ON b.user_id = u.user_id
                  ORDER BY distance
                  LIMIT ? OFFSET ?",
                 [$userLatitude, $userLongitude, $userLatitude, $perPage, ($request->input('page', 1) - 1) * $perPage]
             );
+
     
             return response()->json([
                 'message' => 'Requests found',

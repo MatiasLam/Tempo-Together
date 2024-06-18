@@ -70,11 +70,20 @@ class SearchController extends Controller
         // Buscar usuario por username
         $user = User::where('username', $username)->first();
 
+
+        $instruments = DB::table('instruments')
+            ->join('user_instruments', 'instruments.instrument_id', '=', 'user_instruments.instrument_id')
+            ->where('user_instruments.user_id', $user->user_id)
+            ->select('instrument' , "icon" , "user_instruments.instrument_level")
+            ->get();
+
         // Se elimina el user id, el password_hash y los campos de fecha
         unset($user->user_id);
         unset($user->password_hash);
         unset($user->created_at);
         unset($user->updated_at);
+
+        $user->instruments = $instruments;
 
 
         if ($user) {

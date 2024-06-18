@@ -9,11 +9,7 @@ class RoleSeeder extends Seeder
 {
     public function run()
     {
-        // DB::table('users')::insert(
-        //     [
-        //     'name'=>'Akhila',
-        //     'password'=>'ethan'
-        //     ] );    }
+
         Role::create([
             'user_id' => 1,
             'role' => 'admin'

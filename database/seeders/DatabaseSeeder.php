@@ -14,11 +14,9 @@ class DatabaseSeeder extends Seeder
 
             UserSeeder::class,
             UserInstrumentSeeder::class,
-
             BandSeeder::class,
-
-            BandRequestSeeder::class,
             ConcertSeeder::class,
+            BandRequestSeeder::class,
             BandMemberSeeder::class,
 
         ]);
