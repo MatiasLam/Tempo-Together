@@ -13,9 +13,11 @@ class CreateBandRequestsTable extends Migration
             $table->unsignedBigInteger('band_id');
             $table->string('title', 50);
             $table->string('new_member_instrument', 120);
-            $table->char('instrument_level', 14)->nullable();
-            $table->text('description')->nullable();
+            $table->char('instrument_level', 20)->nullable();
+            $table->text('description',100)->nullable();
             $table->timestamps();
+
+            $table->foreign('band_id')->references('band_id')->on('bands')->onDelete('cascade');
         });
     }
 

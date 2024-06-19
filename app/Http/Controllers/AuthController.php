@@ -28,10 +28,24 @@ class AuthController extends Controller{
       
         $user = User::where('email', $request->input('email'))->first();
         if($user && Hash::check($request->input('password'), $user->password_hash)){
-            return response()->json([
-                'message' => 'Login successful',
-                'user' => $user
-            ]);
+
+            // si el usuario es el tipo band, se obtiene el band_id
+            if($user->type == 'band'){
+                $band = Band::where('user_id', $user->user_id)->first();
+                $band_id = $band->band_id;  
+                
+                return response()->json([
+                    'message' => 'Login successful',
+                    'user' => $user,
+                    'band_id' => $band_id
+                ]);
+             } else{
+                return response()->json([
+                    'message' => 'Login successful',
+                    'user' => $user
+                ]);
+             }
+           
         } else {
             return response()->json([
                 'message' => 'Login failed'

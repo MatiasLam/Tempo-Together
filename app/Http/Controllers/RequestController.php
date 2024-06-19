@@ -17,7 +17,7 @@ class RequestController extends Controller
             'title' => 'required|string|max:50', 
             'new_member_instrument' => 'required|string|max:30',
             'instrument_level' => 'required|string|max:20',
-            'description' => 'nullable|string|max:1000',
+            'description' => 'nullable|string|max:100',
         ]);
 
         // Si falla la validación

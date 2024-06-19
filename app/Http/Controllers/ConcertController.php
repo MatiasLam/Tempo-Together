@@ -17,13 +17,13 @@ class ConcertController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'band_id' => 'required|integer',
-            'title' => 'required|string|max:70', 
+            'title' => 'required|string|max:30|min:5', 
             'date' => 'required|date',
             'time' => 'required|string|max:10',
             'latitude' => 'numeric',
             'longitude' => 'numeric',
-            'place' => 'required|string|max:100',
-            'desc' => 'required|string|max:1000',
+            'place' => 'required|string|max:50',
+            'desc' => 'required|string|max:100',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048' // Asegúrate de que el campo es un archivo de imagen
         ]);
 
