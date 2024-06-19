@@ -125,7 +125,7 @@ class SearchController extends Controller
         $concerts = DB::table('concerts')
             ->where('band_id', $band_id)
             ->get();
-
+            
         //requests
         $requests = DB::table('band_requests')
             ->where('band_id', $band_id)
